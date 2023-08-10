@@ -27,10 +27,10 @@
  * values outputted over the serial line. Now connect to the studio using the
  * `edge-impulse-data-forwarder` and start capturing data
  */
-#define SAMPLE_ACCELEROMETER
+//#define SAMPLE_ACCELEROMETER
 // #define SAMPLE_GYROSCOPE
 // #define SAMPLE_ORIENTATION
-// #define SAMPLE_ENVIRONMENTAL
+#define SAMPLE_ENVIRONMENTAL
 // #define SAMPLE_ROTATION_VECTOR
 
 /**
@@ -72,6 +72,7 @@ Sensor temp(SENSOR_ID_TEMP);
 Sensor baro(SENSOR_ID_BARO);
 Sensor hum(SENSOR_ID_HUM);
 Sensor gas(SENSOR_ID_GAS);
+SensorBSEC bsec(SENSOR_ID_BSEC);
 #endif
 #ifdef SAMPLE_ROTATION_VECTOR
 SensorQuaternion rotation(SENSOR_ID_RV);
@@ -94,10 +95,11 @@ void setup() {
     ori.begin();
 #endif
 #ifdef SAMPLE_ENVIRONMENTAL
-    temp.begin();
-    baro.begin();
+    //temp.begin();
+    //baro.begin();
     hum.begin();
     gas.begin();
+    bsec.begin();
 #endif
 #ifdef SAMPLE_ROTATION_VECTOR
     rotation.begin();
@@ -132,11 +134,12 @@ void loop() {
     );
 #endif
 #ifdef SAMPLE_ENVIRONMENTAL
-    ei_printf("%.2f, %.2f, %.2f, %.2f,"
-        ,temp.value()
-        ,baro.value()
-        ,hum.value()
-        ,gas.value()
+    ei_printf("%.2f, %.3f, %d"
+        //,temp.value()
+        //,baro.value()
+        ,(hum.value()) //normalize so on same scale
+        ,(gas.value() / 1000.000) //normalize so on same scale
+        ,bsec.iaq()
     );
 #endif
 #ifdef SAMPLE_ROTATION_VECTOR
